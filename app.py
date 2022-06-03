@@ -19,8 +19,8 @@ class Todo(db.Model):
 @app.route('/', methods=['POST', 'GET'])            # creates the routing for GET/POST methods
 def index():
     if request.method == 'POST':                    # if POST(create) request is made, take contents of new task and adds it to the Todo object 
-        task_content = request.form['content']
-        new_task = Todo(content=task_content)
+        task_content = request.form['content']      # takes the contents of the 'content' form in 'index.html' and saves it to a variable
+        new_task = Todo(content=task_content)       # creates a new Todo iteration to be submitted into the database
 
         try:
             db.session.add(new_task)                # tries to commit the changes to the database then return us to thee index url
@@ -32,17 +32,33 @@ def index():
         tasks = Todo.query.order_by(Todo.date_created).all() # if no request method is called then show the latest list ordered from oldest
         return render_template("index.html", tasks = tasks)
 
-@app.route('/delete/<int:id>', )
+@app.route('/delete/<int:id>')
 def delete(id):
     task_to_delete = Todo.query.get_or_404(id)      # attempts to get task by ID otherwise it sends a 404 
 
     try:
-        db.session.delete(task_to_delete)
+        db.session.delete(task_to_delete)           # if the task ID was retrived then delete it from the database
         db.session.commit()
         return redirect('/')
 
     except:
         return "There was a problem deleting"
+
+@app.route('/update/<int:id>', methods = ['GET', 'POST'])
+def update(id):
+    task = Todo.query.get_or_404(id)
+    if request.method == 'POST':
+        task.content = request.form['content']
+
+        try:
+            db.session.commit()
+            return redirect('/')
+        
+        except:
+            return "There was an issue updating your task"
+    else:
+        return render_template('update.html', task=task)
+
 
 if __name__ == "__main__":
     app.run(debug=True)

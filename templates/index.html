@@ -7,6 +7,9 @@
 {% block body %}
 <div class = "content">
     <h1>Task Master</h1>
+    {% if tasks|length < 1 %}
+    <h4>There are no tasks. Create one below!</h4>
+    {% else %}
     <table>
         <tr>
             <th>Task</th>
@@ -14,17 +17,18 @@
             <th>Actions</th>
         </tr>
         <tr>
-            {% for task in tasks %}
+            {% for task in tasks %}                     <!-- loops through the tasks (set in app.py) to give them each their own row-->
             <td>{{ task.content }}</td>
             <td>{{ task.date_created.date() }}</td>
             <td>
-                <a href="/delete/{{task.id}}">Delete</a>
+                <a href="/delete/{{task.id}}">Delete</a>  <!-- added in the link to the item being deleted with jinja-->
                 <br>
-                <a href="">Update</a>
+                <a href="/update/{{task.id}}">Update</a>
             </td>
         </tr>
         {% endfor %}
     </table>
+    {% endif %}
     <form action="/" method = "POST">
         <input type="text" name = "content" id = "content">
         <input type="submit" value = "Add Task">

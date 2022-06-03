@@ -1,3 +1,5 @@
+# crash course provided by freecodecamp.org via youtube https://www.youtube.com/watch?v=Z1RJmh_OqeA
+
 from flask import Flask, render_template
 
 app = Flask(__name__)
